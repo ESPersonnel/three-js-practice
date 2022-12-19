@@ -42,13 +42,13 @@ scene.remove(mesh);
 
 // Create 1000 instances of the mesh
 const instances = [];
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 500; i++) {
   const instance = mesh.clone();
   instance.position.x = Math.random() * 10 - 5;
   instance.position.y = Math.random() * 10 - 5;
   instance.position.z = Math.random() * 10 - 5;
-  instance.rotationVelocity = Math.random() * 0.1;
-  instance.waveFunction = Math.random(); // Add a wave function property to each instance  
+  instance.rotationVelocity = Math.random() * 0.1; // Add a rotation velocity property to each instance
+  instance.waveFunction = Math.random() * 10; // Add a wave function property to each instance  
 
   // Create a random color for the instance
   const color = new THREE.Color(Math.random(), Math.random(), Math.random());
