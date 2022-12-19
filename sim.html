@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.119.1/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.119.1/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        // Set up the scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Set up the cubes
+        const cubes = [];
+        const cubeSize = 0.1;
+        const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+        for (let i = 0; i < 500; i++) {
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.position.x = Math.random() * 2 - 1;
+        cube.position.y = Math.random() * 2 - 1;
+        cube.position.z = Math.random() * 2 - 1;
+        cubes.push(cube);
+        scene.add(cube);
+        }
+
+        // Set up the mouse interaction
+        const mouse = new THREE.Vector2();
+        const radius = 0.5;
+        const strength = 0.01;
+
+        document.addEventListener('mousemove', (event) => {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Animate the scene
+        function animate() {
+        requestAnimationFrame(animate);
+
+        cubes.forEach((cube) => {
+            // Calculate the distance between the cube and the mouse
+            const distance = mouse.distanceTo(cube.position);
+
+            // If the distance is within the radius, apply a force towards the mouse
+            if (distance < radius) {
+            const force = new THREE.Vector3().subVectors(mouse, cube.position).multiplyScalar(strength);
+            const interpolatedForce = new THREE.Vector3().lerp(force, new THREE.Vector3(), distance / radius);
+            cube.position.add(interpolatedForce);
+            }
+
+            // Apply a random force to the cubes
+            const randomForce = new THREE.Vector3(Math.random() * 0.01 - 0.005, Math.random() * 0.01 - 0.005, Math.random() * 0.01 - 0.005);
+            cube.position.add(randomForce);
+
+
+            // Constrain the cubes within the scene
+            if (cube.position.x < -1 || cube.position.x > 1) {
+            cube.position.x = -cube.position.x;
+            }
+            if (cube.position.y < -1 || cube.position.y > 1) {
+            cube.position.y = -cube.position.y;
+            }
+            if (cube.position.z < -1 || cube.position.z > 1) {
+            cube.position.z = -cube.position.z;
+            }
+        });
+
+        renderer.render(scene, camera);
+        }
+
+        animate();
+
+    </script>
+
+</body>
+</html>
